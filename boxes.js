@@ -5,11 +5,11 @@ var cw = app.renderer.width;
 var ch = app.renderer.height;
 var sn = [];
 var score = 0;
-var bits = 0;
+var bits = getRandInt(2, 6);
 var boxerDirection = 0;
 var im = new PIXI.interaction.InteractionManager(app.renderer);
 var scoreText = new PIXI.Text('Score: 0');
-var bitText = new PIXI.Text('Bits: ' + getRandInt(2, 6));
+var bitText = new PIXI.Text('Bits: ' + bits);
 bitText.x = 20;
 bitText.y = 50;
 scoreText.x = 20;
@@ -53,7 +53,7 @@ right.press = function () {
 }
 
 for (var i = 0; i < 5; i++) {
-    sn.push(newBlock(getRandInt(i * (cw / 5) + 20, (cw / 5) * (i + 1) - 20), 30, 40, 20, getRandInt(1, 42)));
+    sn.push(newBlock(getRandInt(i * (cw / 5) + 20, (cw / 5) * (i + 1) - 20), 30, 40, 20, Math.pow(2, bits) / 2));
     sn[i].speed = getRandInt(2, 4);
     app.stage.addChild(sn[i]);
 }
@@ -84,14 +84,14 @@ app.ticker.add(function(delta) {
             boxer.children[1].setText(+boxer.children[1].text + +sn[i].children[1].text);
             sn[i].y = 40;
             sn.speed = getRandInt(2, 4);
-            sn[i].children[1].setText(getRandInt(1, 42));
+            sn[i].children[1].setText(getRandInt(1, Math.pow(2, bits) / 2));
             sn[i].x = getRandInt(i * (cw / 5) + 20, (cw / 5) * (i + 1) - 20);
         }
 
         if (sn[i].y > ch) {
             sn[i].y = 40;
             sn.speed = getRandInt(2, 4);
-            sn[i].children[1].setText(getRandInt(1, 42));
+            sn[i].children[1].setText(getRandInt(1, Math.pow(2, bits) / 2));
             sn[i].x = getRandInt(i * (cw / 5) + 20, (cw / 5) * (i + 1) - 20);
             
         }
