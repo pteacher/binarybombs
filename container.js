@@ -1,6 +1,11 @@
 var task = {};
-var app = new PIXI.Application(800, 400, {backgroundColor : 0xffffff});
+var task = taskGen(1);
+var ORIENTATION = (window.innerWidth > window.innerHeight) ? 'horizontal' : 'vertical';
+
+var app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0xffffff});
 document.body.appendChild(app.view);
+app.view.id = 'pixi-canvas';
+console.log(ORIENTATION);
 
 var texture = PIXI.Texture.fromImage('assets/bomb1.png');
 var redWireText, blueWireText, binaryText;
@@ -9,22 +14,22 @@ var container = new PIXI.Container();
 app.stage.addChild(container);
 var bunny = new PIXI.Sprite(texture);
 bunny.anchor.set(0.5);
+bunny.scale.x = 2;
+bunny.scale.y = 2;
+
 container.addChild(bunny);
 container.x = (app.renderer.width - container.width) / 2;
 container.y = (app.renderer.height - container.height) / 2;
 
 var scoreText = new PIXI.Text('0', {
     fontFamily: 'Verdana',
-    fontSize: 42,
+    fontSize: 102,
 });
 
 scoreText.x = (app.renderer.width - scoreText.width) / 2;
 scoreText.y = 20;
 
 app.stage.addChild(scoreText);
-
-var task = taskGen(1);
-
 
 function onClick () {
 	
@@ -57,7 +62,7 @@ function getRandInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 }
 
-
+/*
 // // Load them google fonts before starting...!
 window.WebFontConfig = {
     google: {
@@ -69,8 +74,6 @@ window.WebFontConfig = {
     }
 };
 
-// include the web-font loader script
-/* jshint ignore:start */
 (function() {
     var wf = document.createElement('script');
     wf.src = ('https:' === document.location.protocol ? 'https' : 'http') +
@@ -81,10 +84,11 @@ window.WebFontConfig = {
     s.parentNode.insertBefore(wf, s);
 })();
 /* jshint ignore:end */
+init();
 
 function init() {
 	var styleNumbers = new PIXI.TextStyle({
-	    fontFamily: 'Press Start 2P',
+	    fontFamily: 'Verdana',
 	    fontSize: 16,
 	    fontWeight: 600,
 	    fill: '#ff3333',
@@ -94,7 +98,7 @@ function init() {
 	redWireText = new PIXI.Text(task.q[1], styleNumbers);
 	var hitRect = new PIXI.Rectangle(-100, -100, 200, 200);
 	redWireText.anchor.set(0.5, 0);
-	redWireText.y = bunny.y + 100;
+	redWireText.y = container.y;
 	redWireText.x = (app.renderer.width - redWireText.width) / 2 + 120;
 	redWireText.interactive = true;
 	redWireText.buttonMode = true;
@@ -104,7 +108,7 @@ function init() {
 
 	blueWireText = new PIXI.Text(task.q[2], styleNumbers);
 	blueWireText.anchor.set(0.5, 0);
-	blueWireText.y = bunny.y + 100;
+	blueWireText.y = container.y;
 	blueWireText.x = (app.renderer.width - blueWireText.width) / 2 - 100;
 	blueWireText.interactive = true;
 	blueWireText.buttonMode = true;
@@ -114,7 +118,7 @@ function init() {
 
 	binaryText = new PIXI.Text(task.q[0], styleNumbers);
 	binaryText.anchor.set(0.5, 0);
-	binaryText.y = bunny.y + 230;
+	binaryText.y = container.y;
 	binaryText.x = (app.renderer.width - binaryText.width) / 2 + 23;
 	app.stage.addChild(binaryText);
 }
