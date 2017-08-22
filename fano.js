@@ -1,6 +1,5 @@
 'use strict';
 
-var task = {};
 var task = taskGen(5);
 var ORIENTATION = (window.innerWidth > window.innerHeight) ? 'horizontal' : 'vertical';
 

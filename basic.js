@@ -9,6 +9,11 @@ var dx = 1;
 var dy = 0;
 var ds = 0;
 
+var left = keyboard(37),
+    up = keyboard(38),
+    right = keyboard(39),
+    down = keyboard(40);
+
 for (var i = 0; i < snakeLength; i++) {
     sn.push(newBlock(100 - i * snakeSize, ch / 2, randChar(['0','1'], 1, 1)));
     app.stage.addChild(sn[i]);
@@ -83,4 +88,42 @@ function randChar(charArray, minLen, maxLen) {
         s.push(charArray[getRandInt(0, charArray.length - 1)])
     }
     return s.join("");
+}
+
+
+function keyboard(keyCode) {
+  var key = {};
+  key.code = keyCode;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = undefined;
+  key.release = undefined;
+  //The `downHandler`
+  key.downHandler = function(event) {
+    if (event.keyCode === key.code) {
+      if (key.isUp && key.press) key.press();
+      key.isDown = true;
+      key.isUp = false;
+    }
+    event.preventDefault();
+  };
+
+  //The `upHandler`
+  key.upHandler = function(event) {
+    if (event.keyCode === key.code) {
+      if (key.isDown && key.release) key.release();
+      key.isDown = false;
+      key.isUp = true;
+    }
+    event.preventDefault();
+  };
+
+  //Attach event listeners
+  window.addEventListener(
+    "keydown", key.downHandler.bind(key), false
+  );
+  window.addEventListener(
+    "keyup", key.upHandler.bind(key), false
+  );
+  return key;
 }
