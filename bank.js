@@ -30,42 +30,61 @@ var client = newSprite(-100, ch / 2, 0.5, 0.5, 1, clientNormalTexture);
 var chat = newSprite(cw / 2 - 50, ch / 2 - 20, 1, 1, 1, speechTexture);
 var dec = newSprite(cw / 2 + 150, ch * 3 / 4, 0.5, 0.5, 1, notesTexture, 1);
 var inc = newSprite(cw / 2 - 150, ch * 3 / 4, 0.5, 0.5, 1, coinsTexture, 0);
-var convertText = new PIXI.Text(units[task.q[0]]+' -> '+units[task.q[1]], {
+var convertText = new PIXI.Text(task.q[2] + ' ' + units[task.q[0]], {
         fontFamily: 'Arial',
         fill: '#000000',
         align: 'center',
         fontSize: 24
     });
-convertText.x = chat.x - 110;
-convertText.y = chat.y - 90;
-chat.visible = false;
-convertText.visible = false;
+convertText.x = chat.x - 60;
+convertText.y = chat.y - 70;
+convertText.anchor.set(0.5);
+var convertIncText = new PIXI.Text(task.q[2] * task.q[3] + ' ' + units[task.q[1]], {
+        fontFamily: 'Arial',
+        fill: '#000000',
+        align: 'center',
+        fontSize: 24
+    });
+convertIncText.x = inc.x;
+convertIncText.y = inc.y + 80;
+convertIncText.anchor.set(0.5);
+var convertDecText = new PIXI.Text(task.q[2] / task.q[3] + ' ' + units[task.q[1]], {
+        fontFamily: 'Arial',
+        fill: '#000000',
+        align: 'center',
+        fontSize: 24
+    });
+convertDecText.x = dec.x;
+convertDecText.y = dec.y + 80;
+convertDecText.anchor.set(0.5);
+var taskText = new PIXI.Container();
+taskText.addChild(chat, convertText, convertIncText, convertDecText);
+taskText.visible = false;
 
 app.stage.addChild(inc);
 app.stage.addChild(dec);
-app.stage.addChild(chat);
-app.stage.addChild(convertText);
 app.stage.addChild(client);
+app.stage.addChild(taskText);
 
 app.ticker.add(function(delta) {
     if (client.x < cw / 2) {
         client.x += 5 * delta;
     }
     else {
-        chat.visible = true;
-        convertText.visible = true;
+        taskText.visible = true;
     }
     if (pick) {
         client.x += 5 * delta;
-        chat.visible = false;
-        convertText.visible = false;
+        taskText.visible = false;
     }
     if (client.x > cw) {
         pick = false;
         client.texture = clientNormalTexture;
         client.x = -100;
         task = getTask(5);
-        convertText.text = units[task.q[0]]+' -> '+units[task.q[1]];
+        convertText.text = task.q[2] + ' ' + units[task.q[0]];
+        convertIncText.text = task.q[2] * task.q[3] + ' ' + units[task.q[1]];
+        convertDecText.text = task.q[2] / task.q[3] + ' ' + units[task.q[1]];
     }
 });
 
@@ -81,17 +100,16 @@ function newSprite(x, y, xs, ys, scale, texture, type) {
         el.buttonMode = true;
         el.on('pointerdown', function() {
             if (checkTask() == type)
-                client.texture = clientSadTexture;
+                if (task.q[0] > task.q[1])
+                    client.texture = clientSadTexture;
+                else
+                    client.texture = clientSmugTexture;
             else
-                client.texture = clientHappyTexture;
+                    client.texture = clientHappyTexture;
             pick = true;
         });
     }
     return el;
-}
-
-function setFace() {
-
 }
 
 function getTask(lvl) {
@@ -99,7 +117,12 @@ function getTask(lvl) {
     task.q[0] = getRandInt(0, units.length-1);
     do {
         task.q[1] = getRandInt(0, units.length-1);
-    } while (task.q[0] == task.q[1])
+    } while (task.q[0] == task.q[1] || Math.abs(task.q[0]-task.q[1]) > 1);
+    task.q[2] = getRandInt(1, lvl) * Math.pow(2, getRandInt(1, 10));
+    task.q[3] = 1024;
+    if (task.q[0] == 0 || (task.q[1] == 1 && task.q[0] == 0)) {
+        task.q[3] = 8
+    }
     return task;
 }
 
