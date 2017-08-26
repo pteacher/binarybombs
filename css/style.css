@@ -1,9 +1,22 @@
 html, body {
-  background: green;
+  background: black;
+  margin: 0 auto;
 }
 
 #pixi-canvas {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   margin: auto;
+}
+
+#progressbarHolder {
+  background-color: black;
+  border-radius: 0px; /* (height of inner div) / 2 + padding */
+  padding: 0px;
+}
+
+#progressbar {
+   background-color: #DB5800;
+   width: 1%; /* Adjust with JavaScript */
+   height: 5px;
 }

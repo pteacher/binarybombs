@@ -1,4 +1,8 @@
 'use strict';
+var pts = 0;
+var count = 12, counter = setInterval(timer, 1000);
+var progress = document.getElementById("progressbar");
+progress.style.width = pts + '%';
 var units = ['б', 'Б', 'Кб', 'Мб', 'Гб', 'Тб'];
 var task = {};
 var task = getTask(5);
@@ -48,7 +52,7 @@ var convertIncText = new PIXI.Text(task.q[2] * task.q[3] + ' ' + units[task.q[1]
 convertIncText.x = inc.x;
 convertIncText.y = inc.y + 80;
 convertIncText.anchor.set(0.5);
-var convertDecText = new PIXI.Text(task.q[2] / task.q[3] + ' ' + units[task.q[1]], {
+var convertDecText = new PIXI.Text((task.q[2] / task.q[3]).toFixed(3) + ' ' + units[task.q[1]], {
         fontFamily: 'Arial',
         fill: '#000000',
         align: 'center',
@@ -84,7 +88,7 @@ app.ticker.add(function(delta) {
         task = getTask(5);
         convertText.text = task.q[2] + ' ' + units[task.q[0]];
         convertIncText.text = task.q[2] * task.q[3] + ' ' + units[task.q[1]];
-        convertDecText.text = task.q[2] / task.q[3] + ' ' + units[task.q[1]];
+        convertDecText.text = (task.q[2] / task.q[3]).toFixed(3) + ' ' + units[task.q[1]];
     }
 });
 
@@ -99,13 +103,32 @@ function newSprite(x, y, xs, ys, scale, texture, type) {
         el.interactive = true;
         el.buttonMode = true;
         el.on('pointerdown', function() {
-            if (checkTask() == type)
+            if (checkTask() == type) {
+                pts -= 20;
                 if (task.q[0] > task.q[1])
                     client.texture = clientSadTexture;
                 else
                     client.texture = clientSmugTexture;
-            else
-                    client.texture = clientHappyTexture;
+            }
+                
+            else {
+                pts += 20;
+                if (pts > 35) {
+                    progress.style.backgroundColor = "FF9000";
+                }
+                if (pts > 55) {
+                    progress.style.backgroundColor = "#8EA106";
+                }
+                if (pts > 75) {
+                    progress.style.backgroundColor = "#03C03C";
+                }
+                client.texture = clientHappyTexture; 
+            }
+            if (pts < 0)
+                pts = 0;
+            if (pts > 100)
+                pts = 100;
+            progress.style.width = pts + '%';        
             pick = true;
         });
     }
@@ -120,7 +143,7 @@ function getTask(lvl) {
     } while (task.q[0] == task.q[1] || Math.abs(task.q[0]-task.q[1]) > 1);
     task.q[2] = getRandInt(1, lvl) * Math.pow(2, getRandInt(1, 10));
     task.q[3] = 1024;
-    if (task.q[0] == 0 || (task.q[1] == 1 && task.q[0] == 0)) {
+    if (task.q[0] == 0 || (task.q[0] == 1 && task.q[1] == 0)) {
         task.q[3] = 8
     }
     return task;
@@ -135,3 +158,16 @@ function getRandInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 }
+
+function timer()
+{
+  count = count - 1;
+  if (count <= 0)
+  {
+     pick = true;
+     count = 12;
+     client.texture = clientSadTexture;
+     console.log("time is over");
+  }
+  console.log(count);
+ }
