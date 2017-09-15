@@ -144,7 +144,7 @@ function getTask(lvl) {
     task.q[0] = getRandInt(0, units.length-1);
     do {
         task.q[1] = getRandInt(0, units.length-1);
-    } while (Math.abs(task.q[0]-task.q[1]) > 1);
+    } while (task.q[0] == task.q[1] || Math.abs(task.q[0]-task.q[1]) > 1);
     task.q[2] = getRandInt(1, lvl) * Math.pow(2, getRandInt(1, 10));
     task.q[3] = 1024;
     if (task.q[0] == 0 || (task.q[0] == 1 && task.q[1] == 0)) {
