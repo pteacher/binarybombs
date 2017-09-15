@@ -5,6 +5,29 @@
 	<meta charset="utf-8">
 	<title></title>
 	<link rel="stylesheet" href="css/style.css">
+	<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+
+	<script>
+	var config = {
+	  apiKey: "AIzaSyD3TN_Z-zgJBVf9a3TjhmbCF6OQigIIdyM",
+	  authDomain: "outstanding-box-110812.firebaseapp.com",
+	  databaseURL: "https://outstanding-box-110812.firebaseio.com",
+	  storageBucket: "outstanding-box-110812.appspot.com",
+	  messagingSenderId: "<SENDER_ID>",
+	};
+	firebase.initializeApp(config);
+	var database = firebase.database();
+	function writeUserData(userId, name, email, imageUrl) {
+	  firebase.database().ref('users/' + userId).set({
+	    username: name,
+	    email: email,
+	    profile_picture : imageUrl
+	  });
+	}
+	writeUserData('test', 'testov', 'me@me.me', '1.png');
+	</script>
 </head>
 <body>
 <div id="progressbarHolder">

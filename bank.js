@@ -1,6 +1,6 @@
 'use strict';
 var pts = 0;
-var count = 12, counter = setInterval(timer, 1000);
+var count = 12, counter = setInterval(timer, 100000);
 var progress = document.getElementById("progressbar");
 progress.style.width = pts + '%';
 var units = ['б', 'Б', 'Кб', 'Мб', 'Гб', 'Тб'];
@@ -32,8 +32,9 @@ var coinsTexture = PIXI.Texture.fromImage('assets/coins.png');
 
 var client = newSprite(-100, ch / 2, 0.5, 0.5, 1, clientNormalTexture);
 var chat = newSprite(cw / 2 - 50, ch / 2 - 20, 1, 1, 1, speechTexture);
-var dec = newSprite(cw / 2 + 150, ch * 3 / 4, 0.5, 0.5, 1, notesTexture, 1);
-var inc = newSprite(cw / 2 - 150, ch * 3 / 4, 0.5, 0.5, 1, coinsTexture, 0);
+var dec = newSprite(cw / 2 + 80, ch * 3 / 4, 0.5, 0.5, 1, notesTexture, 1);
+var inc = newSprite(cw / 2 - 80, ch * 3 / 4, 0.5, 0.5, 1, coinsTexture, 0);
+
 var convertText = new PIXI.Text(task.q[2] + ' ' + units[task.q[0]], {
         fontFamily: 'Arial',
         fill: '#000000',
@@ -52,6 +53,7 @@ var convertIncText = new PIXI.Text(task.q[2] * task.q[3] + ' ' + units[task.q[1]
 convertIncText.x = inc.x;
 convertIncText.y = inc.y + 80;
 convertIncText.anchor.set(0.5);
+
 var convertDecText = new PIXI.Text((task.q[2] / task.q[3]).toFixed(3) + ' ' + units[task.q[1]], {
         fontFamily: 'Arial',
         fill: '#000000',
@@ -61,6 +63,7 @@ var convertDecText = new PIXI.Text((task.q[2] / task.q[3]).toFixed(3) + ' ' + un
 convertDecText.x = dec.x;
 convertDecText.y = dec.y + 80;
 convertDecText.anchor.set(0.5);
+
 var taskText = new PIXI.Container();
 taskText.addChild(chat, convertText, convertIncText, convertDecText);
 taskText.visible = false;
@@ -103,8 +106,9 @@ function newSprite(x, y, xs, ys, scale, texture, type) {
         el.interactive = true;
         el.buttonMode = true;
         el.on('pointerdown', function() {
+            count = 12;
             if (checkTask() == type) {
-                pts -= 20;
+                pts -= 100 / 10;
                 if (task.q[0] > task.q[1])
                     client.texture = clientSadTexture;
                 else
@@ -112,7 +116,7 @@ function newSprite(x, y, xs, ys, scale, texture, type) {
             }
                 
             else {
-                pts += 20;
+                pts += 100 / 15;
                 if (pts > 35) {
                     progress.style.backgroundColor = "FF9000";
                 }
@@ -140,7 +144,7 @@ function getTask(lvl) {
     task.q[0] = getRandInt(0, units.length-1);
     do {
         task.q[1] = getRandInt(0, units.length-1);
-    } while (task.q[0] == task.q[1] || Math.abs(task.q[0]-task.q[1]) > 1);
+    } while (Math.abs(task.q[0]-task.q[1]) > 1);
     task.q[2] = getRandInt(1, lvl) * Math.pow(2, getRandInt(1, 10));
     task.q[3] = 1024;
     if (task.q[0] == 0 || (task.q[0] == 1 && task.q[1] == 0)) {
@@ -167,7 +171,5 @@ function timer()
      pick = true;
      count = 12;
      client.texture = clientSadTexture;
-     console.log("time is over");
   }
-  console.log(count);
- }
+}

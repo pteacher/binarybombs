@@ -18,5 +18,5 @@ html, body {
 #progressbar {
    background-color: #DB5800;
    width: 1%; /* Adjust with JavaScript */
-   height: 5px;
+   height: 8px;
 }
